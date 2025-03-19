@@ -1,0 +1,764 @@
+#include <iostream>
+#include <string>
+#include <fstream>
+using namespace std;
+struct info
+{
+	string fName;
+	string lName;
+	string FfName;
+	string FlName;
+	string Address;
+	float Amount;
+	int AccNo;
+	int CNIC;
+	int PIN;
+	info *nextinfo;
+	info *previnfo;
+};
+struct Category
+{
+	string name;
+	int ID;
+	Category* Nextcat;
+	Category* Prevcat;
+	info* headinfo;
+	info* lastinfo;
+};
+struct Employ
+{
+	string fName;
+	string lName;
+	string FfName;
+	string FlName;
+	string Address;
+	int CNIC;
+	int ID;
+	Employ *nextEm;
+	Employ *prevEm;
+};
+
+struct Manag
+{
+	int ID;
+	int Amountt;
+	int Accno;
+	int Pin;
+};
+class Accounts
+{
+protected:
+	info*headinfo;
+	info*lastinfo;
+	int length;
+public:
+	Accounts()
+	{
+		headinfo = NULL;
+		lastinfo = NULL;
+		length = 0;
+	}
+	void deleteAcc()
+	{
+		int acc = 0;
+		info *currentptr = lastinfo;
+		info *temp;
+		if (headinfo == NULL)
+		{
+			cout << "List is Empty:" << endl;
+		}
+		else
+		{
+			cout << "Enter the Account Number of Account you want to delete=";
+			cin >> acc;
+			for (int i = 0; i < length; i++)
+			{
+				if (currentptr->AccNo == acc)
+				{
+					temp = currentptr;
+					currentptr = currentptr->previnfo;
+					delete temp;
+					currentptr->nextinfo = NULL;
+				}
+				currentptr = currentptr->nextinfo;
+			}
+			cout << "Account is Not in the List:" << endl;
+		}
+		length--;
+	}
+	void DropAcc()
+	{
+		info *temp = new info;
+		temp = headinfo;
+		int count = 0;
+		info *temp2;
+		info *temp3;
+		while (temp->nextinfo != NULL)
+		{
+			if (temp->Amount == 0)
+			{
+				count++;
+				if (temp->nextinfo == NULL)
+				{
+					temp2 = temp;
+					temp->nextinfo = NULL;
+					temp->nextinfo = lastinfo;
+					lastinfo = temp;
+					delete temp2;
+					length--;
+					break;
+				}
+				else if (temp->previnfo == NULL)
+				{
+					temp2 = temp;
+					temp = temp->nextinfo;
+					temp->previnfo = NULL;
+					headinfo = temp;
+					delete temp2;
+					length--;
+					break;
+				}
+				else
+				{
+					temp2 = temp;
+					temp3 = temp2->nextinfo;
+					temp->nextinfo = temp3;
+					temp3->previnfo = temp;
+					delete temp2;
+					length--;
+					break;
+				}
+			}
+			temp = temp->nextinfo;
+		}
+		if (count == 0)
+		{
+			cout << "No one has zero Amount:" << endl;
+		}
+	}
+	void AddNewAcc()
+	{
+		info *temp = new info;
+		cout << "Enter First Name=";
+		cin >> temp->fName;
+		cout << "Enter Last Name=";
+		cin >> temp->lName;
+		cout << "Enter your father first name=";
+		cin >> temp->FfName;
+		cout << "Enter your father Last name=";
+		cin >> temp->FlName;
+		cout << "Enter Address=";
+		cin >> temp->Address;
+		cout << "Enter CNIC=";
+		cin >> temp->CNIC;
+		cout << "Enter Account Number=";
+		cin >> temp->AccNo;
+		cout << "Enter Amount=";
+		cin >> temp->Amount;
+		temp->nextinfo = NULL;
+		temp->previnfo = NULL;
+		if (length == 0)
+		{
+			headinfo = temp;
+			lastinfo = temp;
+		}
+		else
+		{
+			lastinfo->nextinfo = temp;
+			temp->previnfo = lastinfo;
+			lastinfo = temp;
+		}
+		length++;
+	}
+	void AddAmount()
+	{
+		info* currentptr = new info;
+		currentptr = headinfo;
+		int Cacc, option, Camount = 0;
+		cout << "Enter the Account Number you want to change the Amount:";
+		cin >> Cacc;
+		while (currentptr->nextinfo != NULL)
+		{
+			if (currentptr->AccNo == Cacc)
+			{
+				cout << "Enter the Amount=";
+				cin >> Camount;
+				currentptr->Amount = currentptr->Amount + Camount;
+				break;
+			}
+			currentptr = currentptr->nextinfo;
+		}
+		cout << "Acount is not in the List:" << endl;
+	}
+	void EditInfo()
+	{
+		info* temp = new info;
+		temp = headinfo;
+		int AccountN;
+		cout << "Enter Acount Number you Wanna Edit:";
+		cin >> AccountN;
+		while (temp->nextinfo != NULL)
+		{
+			if (temp->AccNo == AccountN)
+			{
+				cout << "Enter First Name=";
+				cin >> temp->fName;
+				cout << "Enter Last Name=";
+				cin >> temp->lName;
+				cout << "Enter your father first name=";
+				cin >> temp->FfName;
+				cout << "Enter your father Last name=";
+				cin >> temp->FlName;
+				cout << "Enter Address=";
+				cin >> temp->Address;
+				cout << "Enter CNIC=";
+				cin >> temp->CNIC;
+				cout << "Enter Account Number=";
+				cin >> temp->AccNo;
+				cout << "Enter Amount=";
+				cin >> temp->Amount;
+			}
+			temp = temp->nextinfo;
+		}
+		cout << "Acount is not in the List:" << endl;
+	}
+	void SearchAcc()
+	{
+		info *temp = new info;
+		temp = headinfo;
+		int AccountNo;
+		cout << "Enter the Account Number You wanna search:";
+		cin >> AccountNo;
+		for (int i = 0; i < length; i++)
+		{
+			if (temp->AccNo == AccountNo)
+			{
+				cout << "First Name=" << temp->fName << endl;
+				cout << "Last Name=" << temp->lName << endl;
+				cout << "Father First Name=" << temp->FfName << endl;
+				cout << "Father Last Name=" << temp->FlName << endl;
+				cout << "Address=" << temp->Address << endl;
+				cout << "CNIC=" << temp->CNIC << endl;
+				cout << "Account Number=" << temp->AccNo << endl;
+				cout << "Money=" << temp->Amount << endl;
+				break;
+			}
+			temp = temp->nextinfo;
+		}
+		cout << "Acount is not in the list" << endl;
+	}
+	void Display()
+	{
+		info *temp = new info;
+		temp = headinfo;
+		if (length == 0)
+		{
+			cout << "List is Empty:" << endl;
+		}
+		else
+		{
+			while (temp->nextinfo != NULL)
+			{
+				cout << "First Name=" << temp->fName << endl;
+				cout << "Last Name=" << temp->lName << endl;
+				cout << "Father First Name=" << temp->FfName << endl;
+				cout << "Father Last Name=" << temp->FlName << endl;
+				cout << "Address=" << temp->Address << endl;
+				cout << "CNIC=" << temp->CNIC << endl;
+				cout << "Account Number=" << temp->AccNo << endl;
+				cout << "Money=" << temp->Amount << endl;
+				temp = temp->nextinfo;
+			}
+		}
+		/*cout << "Total Number of Accounts=" << length << endl;*/
+	}
+};
+class Employee
+{
+protected:
+	Employ *headEm;
+	Employ *lastEm;
+	int lengEm;
+public:
+	Employee()
+	{
+		headEm = NULL;
+		lastEm = NULL;
+		lengEm = 0;
+	}
+	void RegisEmployee()
+	{
+		Employ *temp = new Employ;
+		cout << "Enter First Name=";
+		cin >> temp->fName;
+		cout << "Enter Last Name=";
+		cin >> temp->lName;
+		cout << "Enter your father first name=";
+		cin >> temp->FfName;
+		cout << "Enter your father Last name=";
+		cin >> temp->FlName;
+		cout << "Enter Address=";
+		cin >> temp->Address;
+		cout << "Enter CNIC=";
+		cin >> temp->CNIC;
+		cout << "Enter Id=";
+		cin >> temp->ID;
+		temp->nextEm = NULL;
+		temp->prevEm = NULL;
+		if (lengEm == 0)
+		{
+			headEm = temp;
+			lastEm = temp;
+		}
+		else
+		{
+			lastEm->nextEm = temp;
+			temp->prevEm = lastEm;
+			lastEm = temp;
+		}
+		lengEm++;
+	}
+	void EditEmpl()
+	{
+		int id = 0;
+		Employ *temp = new Employ;
+		temp = headEm;
+		cout << "Enter the Employee ID you Want to Edit=";
+		cin >> id;
+		for (int i = 0; i < lengEm; i++)
+		{
+			if (temp->ID == id)
+			{
+				cout << "Enter First Name=";
+				cin >> temp->fName;
+				cout << "Enter Last Name=";
+				cin >> temp->lName;
+				cout << "Enter your father first name=";
+				cin >> temp->FfName;
+				cout << "Enter your father Last name=";
+				cin >> temp->FlName;
+				cout << "Enter Address=";
+				cin >> temp->Address;
+				cout << "Enter CNIC=";
+				cin >> temp->CNIC;
+				cout << "Enter Id=";
+				cin >> temp->ID;
+				break;
+			}
+			temp = temp->nextEm;
+		}
+		cout << "Employee is Not in the List:" << endl;
+	}
+	void DisplayEmpl()
+	{
+		Employ *temp = new Employ;
+		temp = headEm;
+		if (lengEm == 0)
+		{
+			cout << "List is Empty:" << endl;
+		}
+		else
+		{
+			for (int i = 0; i < lengEm; i++)
+			{
+				cout << "Enter First Name=";
+				cin >> temp->fName;
+				cout << "Enter Last Name=";
+				cin >> temp->lName;
+				cout << "Enter your father first name=";
+				cin >> temp->FfName;
+				cout << "Enter your father Last name=";
+				cin >> temp->FlName;
+				cout << "Enter Address=";
+				cin >> temp->Address;
+				cout << "Enter CNIC=";
+				cin >> temp->CNIC;
+				cout << "ID=";
+				cin >> temp->ID;
+				temp = temp->nextEm;
+			}
+		}
+	}
+};
+class Bank/*:public Accounts*/
+{
+protected:
+	Category*Headcat;
+	Category*Lastcat;
+	int Length;
+	/*Accounts A1;*/
+public:
+	Bank()
+	{
+		Headcat = NULL;
+		Lastcat = NULL;
+		Length = 0;
+	}
+	void AddNewCatgory()
+	{
+		Category *temp = new Category;
+		cout << "Enter Category Name=";
+		cin >> temp->name;
+		cout << "Enter Category ID=";
+		cin >> temp->ID;
+		temp->Nextcat = NULL;
+		temp->Prevcat = NULL;
+		if (Length == 0)
+		{
+			Headcat = temp;
+			Lastcat = temp;
+		}
+		else
+		{
+			Lastcat->Nextcat = temp;
+			temp->Prevcat = Lastcat;
+			Lastcat = temp;
+		}
+		Length++;
+	}
+	void EditCategory()
+	{
+		int id = 0, count = 0;
+		Category* temp = new Category;
+		temp = Headcat;
+		cout << "Enter the Category ID, You want to edit=";
+		cin >> id;
+		if (Length == 0)
+		{
+			cout << "You cannot Edit the category, Because List is Empty:";
+		}
+		else
+		{
+			for (int i = 0; i < Length; i++)
+			{
+				if (temp->ID == id)
+				{
+					cout << "Enter Category Name=";
+					cin >> temp->name;
+					cout << "Enter Category ID=";
+					cin >> temp->ID;
+					count++;
+				}
+				temp = temp->Nextcat;
+			}
+			if (count == 0)
+			{
+				cout << "You Entered the wrong ID:" << endl;
+			}
+		}
+	}
+	void DeleteCategory()
+	{
+		string Nam;
+		int count = 0;
+		Category* temp = new Category;
+		temp = Headcat;
+		Category *temp2;
+		Category *temp3;
+		cout << "Enter the Name of Category You want to Delete=";
+		cin >> Nam;
+		if (Length == 0)
+		{
+			cout << "List is Empty:" << endl;
+		}
+		else
+		{
+			while (temp->Nextcat != NULL)
+			{
+				if (temp->name == Nam)
+				{
+					count++;
+					if (temp->Nextcat == NULL)
+					{
+						temp2 = temp;
+						temp->Nextcat = NULL;
+						temp->Prevcat = Lastcat;
+						Lastcat = temp;
+						delete temp2;
+						Length--;
+						break;
+					}
+					else if (temp->Prevcat == NULL)
+					{
+						temp2 = temp;
+						temp = temp->Nextcat;
+						temp->Prevcat = NULL;
+						Headcat = temp;
+						delete temp2;
+						Length--;
+						break;
+					}
+					else
+					{
+						temp2 = temp;
+						temp3 = temp2->Nextcat;
+						temp->Nextcat = temp3;
+						temp3->Prevcat = temp;
+						delete temp2;
+						Length--;
+						break;
+					}
+				}
+				temp = temp->Nextcat;
+			}
+			if (count == 0)
+			{
+				cout << "You Entered the wrong ID:" << endl;
+			}
+		}
+	}
+	void DisplayCat()
+	{
+		Category *temp = new Category;
+		temp = Headcat;
+		if (Headcat == NULL)
+		{
+			cout << "List is Empty:" << endl;
+		}
+		else
+		{
+			for (int i = 0; i < Length; i++)
+			{
+				cout << "Category Name=" << temp->name << endl;
+				cout << "ID=" << temp->ID << endl;
+				temp = temp->Nextcat;
+			}
+		}
+	}
+};
+class Manager :public Accounts, public Bank, public Employee
+{
+public:
+	Manager()
+	{
+		string s;
+		ifstream infile;
+		infile.open("List.txt");
+		if (infile.fail())
+		{
+			cout << "Your File did not worcked." << endl;
+		}
+		else
+		{
+			while (!infile.eof())
+			{
+				getline(infile, s);
+				cout << s << endl;
+			}
+			infile.close();
+		}
+	}
+	~Manager()
+	{
+		info *temp = new info;
+		temp = headinfo;
+		Category *temp2 = new Category;
+		temp2 = Headcat;
+		Employ *temp3 = new Employ;
+		ofstream outFile;
+		outFile.open("List.txt");
+		for (int i = 0; i < length; i++)
+		{
+			outFile << "First Name=" << temp->fName << endl;
+			outFile << "Last Name=" << temp->lName << endl;
+			outFile << "Father First Name=" << temp->FfName << endl;
+			outFile << "Father Last Name=" << temp->FlName << endl;
+			outFile << "Address=" << temp->Address << endl;
+			outFile << "CNIC=" << temp->CNIC << endl;
+			outFile << "Account Number=" << temp->AccNo << endl;
+			outFile << "Amount=" << temp->Amount << endl;
+			outFile << endl;
+			temp = temp->nextinfo;
+		}
+		outFile << endl;
+		outFile << "For Category:" << endl;
+		for (int i = 0; i < Length; i++)
+		{
+			outFile << "Name=" << temp2->name << endl;
+			outFile << "ID=" << temp2->ID << endl;
+			outFile << endl;
+			temp2 = temp2->Nextcat;
+		}
+		outFile << endl;
+		outFile << "For Employee:" << endl;
+		for (int i = 0; i < lengEm; i++)
+		{
+			outFile << "First Name=" << temp3->fName << endl;
+			outFile << "Last Name=" << temp3->lName << endl;
+			outFile << "Father First Name=" << temp3->FfName << endl;
+			outFile << "Father Last Name=" << temp3->FlName << endl;
+			outFile << "Address=" << temp3->Address << endl;
+			outFile << "CNIC=" << temp3->CNIC << endl;
+			outFile << "ID=" << temp3->ID << endl;
+			temp3 = temp3->nextEm;
+		}
+		outFile.close();
+	}
+	void SimilSearch()
+	{
+		string num;
+		int num2 = 0;
+		char nam;
+		Employ *temp2 = new Employ;
+		temp2 = headEm;
+		info*temp = new info;
+		temp = headinfo;
+		cout << "Enter the name=";
+		cin >> num;
+		do
+		{
+			cout << "Press 1 to search for Employees" << endl;
+			cout << "Press 2 to search for Account Holders" << endl;
+			cout << "Enter your choice=";
+			cin >> num2;
+			switch (num2)
+			{
+			case 1:
+			{
+					  for (int i = 0; i < length; i++)
+					  {
+						  if (strcmp("temp2->fName", "num"))
+						  {
+							  cout << "Name=" << temp2->fName << " " << temp2->lName << endl;
+						  }
+						  temp2 = temp2->nextEm;
+					  }
+					  break;
+			}
+			case 2:
+			{
+					  for (int i = 0; i < length; i++)
+					  {
+						  if (strcmp("temp->fName", "num"))
+						  {
+							  cout << "Name=" << temp->fName << " " << temp->lName << endl;
+						  }
+						  temp = temp->nextinfo;
+					  }
+					  break;
+			}
+			default:
+			{
+					   cout << "You have Entered the wrong choice:" << endl;
+			}
+			}
+			cout << "You want to continue press y/Y else to Exit=";
+			cin >> nam;
+		} while (nam == 'y' || nam == 'Y');
+	}
+};
+void main()
+{
+	Manager M;
+	char test;
+		do
+		{
+			int option;
+			cout << "\t\tPress 1 to Add New Account:" << endl;
+			cout << "\t\tPress 2 to Delete Account:" << endl;
+			cout << "\t\tPress 3 to Search Account:" << endl;
+			cout << "\t\tPress 4 to Edit Account Info:" << endl;
+			cout << "\t\tPress 5 to Add Amount:" << endl;
+			cout << "\t\tPress 6 to Display All Accounts:" << endl;
+			cout << "\t\tPress 7 to Similarity Search:" << endl;
+			cout << "\t\tPress 8 to Add New Category:" << endl;
+			cout << "\t\tPress 9 to Edit Category:" << endl;
+			cout << "\t\tPress 10 to Delete Category:" << endl;
+			cout << "\t\tPress 11 to Display Category:" << endl;
+			cout << "\t\tPress 12 to Register Employee:" << endl;
+			cout << "\t\tPress 13 to Edit Employee:" << endl;
+			cout << "\t\tPress 14 to Drop Account Holder whose Balance is Zero:" << endl;
+			cout << "\t\tPress 15 to Display All Employees:" << endl;
+			cout << "\t\tChoose Your Option:";
+			cin >> option;
+			switch (option)
+			{
+			case 1:
+			{
+					  M.AddNewAcc();
+					  break;
+			}
+			case 2:
+			{
+					  M.deleteAcc();
+					  break;
+			}
+			case 3:
+			{
+					  M.SearchAcc();
+					  break;
+			}
+			case 4:
+			{
+					  M.EditInfo();
+					  break;
+			}
+			case 5:
+			{
+					  M.AddAmount();
+					  break;
+			}
+			case 6:
+			{
+					  M.Display();
+					  break;
+			}
+			case 7:
+			{
+					  M.SimilSearch();
+					  break;
+			}
+			case 8:
+			{
+					  M.AddNewCatgory();
+					  break;
+			}
+			case 9:
+			{
+					  M.EditCategory();
+					  break;
+			}
+			case 10:
+			{
+					   M.DeleteCategory();
+					   break;
+			}
+			case 11:
+			{
+					   M.DisplayCat();
+					   break;
+			}
+			case 12:
+			{
+					   M.RegisEmployee();
+					   break;
+			}
+			case 13:
+			{
+					   M.EditEmpl();
+					   break;
+			}
+			case 14:
+			{
+					   M.DropAcc();
+					   break;
+			}
+			case 15:
+			{
+					   M.DisplayEmpl();
+					   break;
+			}
+			default:
+			{
+					   cout << "Invalid Option:" << endl;
+			}
+			}
+			cout << "Do You want to continue press y/Y or Else to EXIT:";
+			cin >> test;
+		} while (test == 'y' || test == 'Y');
+}
+
+
+
+
+
